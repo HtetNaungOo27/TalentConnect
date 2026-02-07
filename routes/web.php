@@ -10,14 +10,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ApplicantController;
 
-use Illuminate\Support\Facades\Auth;
 
-Route::get('/',[HomeController::class,'index'])->name('home');
-Route::get('/jobs/search', [JobController::class, 'search'])->name('jobs.search');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::resource('/jobs',JobController::class)->middleware('auth')->only(['create', 'edit', 'update', 'destroy']);
-Route::resource('jobs', JobController::class)->except(['create', 'edit', 'update', 'destroy']);
-
+/* GUEST */
 Route::middleware('guest')->group(function () {
   Route::get('/register', [RegisterController::class, 'register'])->name('register');
   Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
@@ -25,15 +21,35 @@ Route::middleware('guest')->group(function () {
   Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 });
 
-Route::post('/logout',[LoginController::class,'logout'])->name('logout');
-Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard')->middleware('auth');
-Route::put('/profile',[ProfileController::class,'update'])->name('profile.update')->middleware('auth');
-
+/* AUTH */
 Route::middleware('auth')->group(function () {
+
+  Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
   Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
   Route::post('/bookmarks/{job}', [BookmarkController::class, 'store'])->name('bookmarks.store');
   Route::delete('/bookmarks/{job}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
+
+  /* EMPLOYER ROUTES — MUST COME FIRST */
+  Route::middleware('role:employer')->group(function () {
+    Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
+    Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
+    Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
+    Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+    Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
+
+    Route::get('/employer/dashboard', [DashboardController::class, 'employer'])->name('employer.dashboard');
+  });
+
+  Route::middleware('role:user')->group(function () {
+    Route::post('/jobs/{job}/apply', [ApplicantController::class, 'store'])->name('applicant.store');
+  });
+
+  Route::delete('/applicants/{applicant}', [ApplicantController::class, 'destroy'])->name('applicant.destroy');
 });
 
-Route::post('/jobs/{job}/apply', [ApplicantController::class, 'store'])->name('applicant.store')->middleware('auth');
-Route::delete('/applicants/{applicant}', [ApplicantController::class, 'destroy'])->name('applicant.destroy')->middleware('auth');
+/* PUBLIC JOB ROUTES — MUST BE LAST */
+Route::get('/jobs/search', [JobController::class, 'search'])->name('jobs.search');
+Route::resource('jobs', JobController::class)->only(['index', 'show']);

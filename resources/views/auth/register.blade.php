@@ -5,6 +5,7 @@
       @csrf
       <x-inputs.text id="name" name="name" placeholder="Full name" />
       <x-inputs.text id="email" name="email" type="email" placeholder="Email address" />
+      <x-inputs.select id="role" name="role" label="Account Type" :options="['user' => 'Job Seeker', 'employer' => 'Employer']" />
       <x-inputs.text id="password" name="password" type="password" placeholder="Password" />
       <x-inputs.text id="password_confirmation" type="password" name="password_confirmation"
         placeholder="Confirm password" />

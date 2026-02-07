@@ -39,7 +39,7 @@
               <strong>Remote:</strong> {{$job->remote ? 'Yes' : 'No'}}
             </li>
             <li class="mb-2">
-              <strong>Salary:</strong> ${{number_format($job->salary)}}
+              <strong>Salary:</strong> {{number_format($job->salary)}} MMK
             </li>
             <li class="mb-2">
               <strong>Site Location:</strong> {{$job->city}}, {{$job->state}}
