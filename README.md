@@ -1,5 +1,8 @@
 # TalentConnect
+
 TalentConnect is a Laravel-based job portal that connects job seekers with employers. Users can browse and apply for jobs, while employers can post and manage job listings.
+
+---
 
 ## Features
 
@@ -16,29 +19,29 @@ TalentConnect is a Laravel-based job portal that connects job seekers with emplo
 - View applicants and download resumes
 - Dashboard showing all their job listings
 
-### 5. Usage
+---
 
 ## Usage
+1. Visit `http://127.0.0.1:8000` in your browser
+2. Register as a **User (Job Seeker)** or **Employer**
+3. Employers can create jobs via the **Create Job** button
+4. Users can browse and apply for jobs
+5. Role-based access controls are implemented
 
-- Visit `http://127.0.0.1:8000` in your browser
-- Register as a **User** (Job Seeker) or **Employer**
-- Employers can create jobs via `Create Job` button
-- Users can browse and apply for jobs
-- Role-based access controls are implemented
+---
 
 ## Technologies
 - PHP 8.x / Laravel 12
 - Blade Templates
 - Tailwind CSS
 - Alpine.js
-- MySQL / SQLite (any supported database)
+- MySQL / SQLite (or any supported database)
 
-## License
-MIT License
+---
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/HtetNaungOo27/TalentConnect.git
 cd TalentConnect
