@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Job;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\Access;
+
 class JobController extends Controller
 {
     use AuthorizesRequests;
@@ -17,7 +18,7 @@ class JobController extends Controller
     {
         $jobs = Job::paginate(9);
 
-        return view('jobs.index',compact('jobs'));
+        return view('jobs.index', compact('jobs'));
     }
 
     /**
@@ -25,6 +26,7 @@ class JobController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Job::class);
         return view('jobs.create');
     }
 
@@ -59,11 +61,11 @@ class JobController extends Controller
         ]);
 
         //hard coded user id
-        $validatedData['user_id']=auth()->user()->id;
+        $validatedData['user_id'] = auth()->id();
         //check for image
-        if($request->hasFile('company_logo')){
+        if ($request->hasFile('company_logo')) {
             //store the file and get path
-            $path = $request->file('company_logo')->store('logos','public');
+            $path = $request->file('company_logo')->store('logos', 'public');
 
             //add path to validated data
             $validatedData['company_logo'] = $path;
@@ -71,7 +73,7 @@ class JobController extends Controller
         //submit to database
         Job::create($validatedData);
 
-        return redirect()->route('jobs.index')->with('success','Job listing created successfully!');
+        return redirect()->route('jobs.index')->with('success', 'Job listing created successfully!');
     }
 
     /**
@@ -79,7 +81,7 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
-        return view('jobs.show')->with('job',$job);
+        return view('jobs.show')->with('job', $job);
     }
 
     /**
@@ -88,9 +90,9 @@ class JobController extends Controller
     public function edit(Job $job)
     {
         //check if user is authorize
-        $this->authorize('update',$job);
-        
-        return view('jobs.edit')->with('job',$job);
+        $this->authorize('update', $job);
+
+        return view('jobs.edit')->with('job', $job);
     }
 
     /**
@@ -99,7 +101,7 @@ class JobController extends Controller
     public function update(Request $request, Job $job): string
     {
         //check if user is authorize
-        $this->authorize('update',$job);
+        $this->authorize('update', $job);
 
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
@@ -146,19 +148,19 @@ class JobController extends Controller
     public function destroy(Job $job)
     {
         //check if user is authorize
-        $this->authorize('update',$job);
+        $this->authorize('delete', $job);
 
         //if logo then delete it
-        if($job->company_logo){
+        if ($job->company_logo) {
             Storage::delete('public/logos/' . $job->company_logo);
         }
         $job->delete();
 
         //check if delete from dashboard
-        if(request()->query('from')=='dashboard'){
+        if (request()->query('from') == 'dashboard') {
             return redirect()->route('dashboard')->with('success', 'Job listing deleted successfully!');
         }
-        
+
         return redirect()->route('jobs.index')->with('success', 'Job listing deleted successfully!');
     }
 

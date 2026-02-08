@@ -48,12 +48,17 @@ class User extends Authenticatable
         ];
     }
 
-    public function jobListing(){
+    public function jobListing()
+    {
         return $this->hasMany(Job::class);
     }
 
     public function bookmarkedJobs()
     {
         return $this->belongsToMany(Job::class, 'job_user_bookmarks')->withTimestamps();
+    }
+    public function getRouteKeyName()
+    {
+        return 'id'; 
     }
 }

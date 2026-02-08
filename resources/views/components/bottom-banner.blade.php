@@ -9,7 +9,7 @@
                 </p>
             </div>
             <a href="{{ url('jobs/create') }}"
-               class="bg-blue-900 hover:bg-yellow-600 text-black px-4 py-2 rounded hover:shadow-md transition duration-300">
+               class="bg-yellow-500 text-black px-4 py-2 rounded hover:shadow-md transition duration-300">
                 <i class="fa fa-edit"></i> Create Job
             </a>
         </div>

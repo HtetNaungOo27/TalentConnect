@@ -35,29 +35,6 @@
         @endif
     </ul>
 
-    {{-- Action buttons --}}
-    @auth
-        <div class="flex flex-col gap-2 mt-2">
-            {{-- Employer buttons: Edit/Delete --}}
-            @if(auth()->user()->role === 'employer' && auth()->id() === $job->user_id)
-                <a href="{{ route('jobs.edit', $job) }}"
-                   class="block w-full text-center px-5 py-2.5 rounded border text-white bg-yellow-500 hover:bg-yellow-600">
-                   Edit
-                </a>
-
-                <form action="{{ route('jobs.destroy', $job) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="block w-full text-center px-5 py-2.5 rounded border text-white bg-red-500 hover:bg-red-600">
-                        Delete
-                    </button>
-                </form>
-            @endif
-
-        </div>
-    @endauth
-
     {{-- Details link --}}
     <a href="{{ route('jobs.show', $job->id) }}"
        class="block w-full text-center px-5 py-2.5 mt-2 shadow-sm rounded border text-base font-medium text-indigo-700 bg-indigo-100 hover:bg-indigo-200">

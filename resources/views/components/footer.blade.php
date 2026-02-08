@@ -49,7 +49,6 @@
                     <li>Help Center</li>
                     <li>FAQs</li>
                     <li>Contact Support</li>
-                    <li>Live Chat</li>
                 </ul>
             </div>
 

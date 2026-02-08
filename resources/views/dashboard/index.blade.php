@@ -5,11 +5,6 @@
     <div class="bg-white p-8 rounded-lg shadow-md w-full">
       <h3 class="text-3xl text-center font-bold mb-4">Profile Info</h3>
 
-      {{-- Role --}}
-      <p class="text-center text-gray-600 mb-4">
-        <strong>Role:</strong> {{ ucfirst($user->role) }}
-      </p>
-
       {{-- Avatar --}}
       @if($user->avatar)
         <div class="mt-2 flex justify-center">
@@ -17,6 +12,11 @@
                class="w-24 h-24 object-cover rounded-full">
         </div>
       @endif
+ 
+      {{-- Role --}}
+      <p class="text-center text-gray-600 mt-4">
+        <strong>Role:</strong> {{ ucfirst($user->role) }}
+      </p>
 
       <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf

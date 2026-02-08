@@ -116,13 +116,16 @@
     </section>
 
     <aside class="bg-white rounded-lg shadow-md p-3">
-      <h3 class="text-xl text-center mb-4 font-bold">
+      <h3 class="text-xl text-center mt-3 mb-4 font-bold">
         Company Info
       </h3>
       @if($job->company_logo)
       <img src="/storage/{{$job->company_logo}}" alt="Ad" class="w-full rounded-lg mb-4 m-auto" />
       @endif
-      <h4 class="text-lg font-bold">{{$job->company_name}}</h4>
+      <a href="{{ route('employers.show', $job->user_id) }}"
+        class="text-blue-600 hover:underline font-semibold">
+        {{ $job->company_name }}
+      </a>
       @if($job->company_description)
       <p class="text-gray-700 text-lg my-3">
         {{$job->company_description}}

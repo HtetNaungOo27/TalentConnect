@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\EmployerController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -53,3 +54,4 @@ Route::middleware('auth')->group(function () {
 /* PUBLIC JOB ROUTES — MUST BE LAST */
 Route::get('/jobs/search', [JobController::class, 'search'])->name('jobs.search');
 Route::resource('jobs', JobController::class)->only(['index', 'show']);
+Route::get('/employers/{user:id}', [EmployerController::class, 'show'])->name('employers.show');
