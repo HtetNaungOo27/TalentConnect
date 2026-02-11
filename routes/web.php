@@ -14,7 +14,6 @@ use App\Http\Controllers\EmployerController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-/* GUEST */
 Route::middleware('guest')->group(function () {
   Route::get('/register', [RegisterController::class, 'register'])->name('register');
   Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
@@ -22,9 +21,18 @@ Route::middleware('guest')->group(function () {
   Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 });
 
-/* AUTH */
 Route::middleware('auth')->group(function () {
+  Route::get('/notifications/{id}/read', function ($id) {
+    $notification = auth()->user()
+        ->notifications()
+        ->findOrFail($id);
 
+    $notification->markAsRead();
+
+    return redirect($notification->data['url']);
+})->name('notifications.read');
+  Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+  Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
   Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
   Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -33,7 +41,6 @@ Route::middleware('auth')->group(function () {
   Route::post('/bookmarks/{job}', [BookmarkController::class, 'store'])->name('bookmarks.store');
   Route::delete('/bookmarks/{job}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
 
-  /* EMPLOYER ROUTES — MUST COME FIRST */
   Route::middleware('role:employer')->group(function () {
     Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
     Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
@@ -51,7 +58,11 @@ Route::middleware('auth')->group(function () {
   Route::delete('/applicants/{applicant}', [ApplicantController::class, 'destroy'])->name('applicant.destroy');
 });
 
-/* PUBLIC JOB ROUTES — MUST BE LAST */
+Route::patch(
+    '/applicants/{applicant}/status',
+    [ApplicantController::class, 'updateStatus']
+)->name('applicant.status.update');
+
 Route::get('/jobs/search', [JobController::class, 'search'])->name('jobs.search');
 Route::resource('jobs', JobController::class)->only(['index', 'show']);
 Route::get('/employers/{user:id}', [EmployerController::class, 'show'])->name('employers.show');

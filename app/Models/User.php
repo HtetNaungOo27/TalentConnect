@@ -2,21 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Applicant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -25,21 +19,11 @@ class User extends Authenticatable
         'role'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -48,17 +32,49 @@ class User extends Authenticatable
         ];
     }
 
+    // Jobs posted by employer
     public function jobListing()
     {
         return $this->hasMany(Job::class);
     }
 
+    // Bookmarked jobs
     public function bookmarkedJobs()
     {
         return $this->belongsToMany(Job::class, 'job_user_bookmarks')->withTimestamps();
     }
+
+    // Applications
+    public function applications()
+    {
+        return $this->hasMany(Applicant::class);
+    }
+
+    public function appliedJobs()
+    {
+        return $this->hasManyThrough(
+            Job::class,
+            Applicant::class,
+            'user_id',   // FK on applicants
+            'id',        // FK on jobs
+            'id',        // local user key
+            'job_id'     // local applicant key
+        );
+    }
+    // Experiences
+    public function experiences()
+    {
+        return $this->hasMany(Experience::class);
+    }
+
+    // Skills
+    public function skills()
+    {
+        return $this->hasMany(Skill::class);
+    }
+
     public function getRouteKeyName()
     {
-        return 'id'; 
+        return 'id';
     }
 }

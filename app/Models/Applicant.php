@@ -18,6 +18,7 @@ class Applicant extends Model
         'message',
         'location',
         'resume_path',
+        'status',
     ];
 
     // Relation to job

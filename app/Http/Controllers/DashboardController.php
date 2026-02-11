@@ -8,16 +8,42 @@ use App\Models\Job;
 
 class DashboardController extends Controller
 {
-    // @desc    Show all users job listings
-    // @route   GET /dashboard
+    /**
+     * Show dashboard
+     * GET /dashboard
+     */
     public function index()
     {
-        // Get logged in user
         $user = Auth::user();
 
-        // Get the user listings
-        $jobs = Job::where('user_id', $user->id)->with('applicants')->get();
+        // Default empty collections (prevents undefined variable errors)
+        $jobs = collect();
+        $appliedJobs = collect();
 
-        return view('dashboard.index', compact('user', 'jobs'));
+        // Employer: jobs they posted
+        if ($user->role === 'employer') {
+            $jobs = Job::with('applicants')
+                ->where('user_id', $user->id)
+                ->latest()
+                ->get();
+        }
+
+        // Normal user: jobs they applied to
+        if ($user->role === 'user') {
+            $appliedJobs = Job::whereHas('applicants', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->with(['applicants' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                }])
+                ->latest()
+                ->get();
+        }
+
+        return view('dashboard.index', compact(
+            'user',
+            'jobs',
+            'appliedJobs'
+        ));
     }
 }
