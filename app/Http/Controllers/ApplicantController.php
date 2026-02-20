@@ -96,4 +96,16 @@ class ApplicantController extends Controller
 
         return back()->with('success', 'Applicant status updated.');
     }
+
+    public function acceptApplicant(Applicant $applicant)
+    {
+        $applicant->update(['status' => 'accepted']);
+
+        $job = $applicant->job;
+        if ($job->openings > 0) {
+            $job->decrement('openings');
+        }
+
+        return back()->with('success', 'Applicant accepted and job openings updated.');
+    }
 }

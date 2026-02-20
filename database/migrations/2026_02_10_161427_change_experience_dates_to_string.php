@@ -10,18 +10,18 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('experiences', function (Blueprint $table) {
-        $table->string('start_date')->change();
-        $table->string('end_date')->nullable()->change();
-    });
-}
+    {
+        Schema::table('experiences', function (Blueprint $table) {
+            $table->string('start_date')->change();
+            $table->string('end_date')->nullable()->change();
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('experiences', function (Blueprint $table) {
-        $table->date('start_date')->change();
-        $table->date('end_date')->nullable()->change();
-    });
-}
+    public function down(): void
+    {
+        Schema::table('experiences', function (Blueprint $table) {
+            $table->string('start_date')->change();
+            $table->string('end_date')->nullable()->change();
+        });
+    }
 };

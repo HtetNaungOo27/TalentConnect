@@ -40,22 +40,17 @@ class ProfileController extends Controller
             'experiences.*.end_date' => 'nullable|date_format:Y-m',
         ]);
 
-        // Update basic info
         $user->update([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
         ]);
 
-        // Avatar upload
         if ($request->hasFile('avatar')) {
             if ($user->avatar) Storage::disk('public')->delete($user->avatar);
             $user->avatar = $request->file('avatar')->store('avatars', 'public');
             $user->save();
         }
 
-        // ------------------------------
-        // Experiences
-        // ------------------------------
         if ($request->has('experiences')) {
 
             $user->experiences()->delete();
@@ -64,7 +59,7 @@ class ProfileController extends Controller
                 if (empty($exp['title']) && empty($exp['company']) && empty($exp['start_date'])) continue;
 
                 $user->experiences()->create([
-                    'user_id' => $user->id, // <-- Important fix
+                    'user_id' => $user->id,
                     'title' => $exp['title'],
                     'company' => $exp['company'],
                     'start_date' => $exp['start_date'] ? Carbon::createFromFormat('Y-m', $exp['start_date'])->startOfMonth() : null,
@@ -73,9 +68,6 @@ class ProfileController extends Controller
             }
         }
 
-        // ------------------------------
-        // Skills
-        // ------------------------------
         if ($request->filled('skills')) {
             $user->skills()->delete();
 
@@ -83,12 +75,19 @@ class ProfileController extends Controller
 
             foreach ($skillNames as $name) {
                 $user->skills()->create([
-                    'user_id' => $user->id, // <-- Important fix
+                    'user_id' => $user->id,
                     'name' => $name,
                 ]);
             }
         }
 
         return redirect()->route('dashboard')->with('success', 'Profile updated successfully.');
+    }
+
+    public function show($id)
+    {
+        $user = \App\Models\User::with(['experiences', 'skills'])->findOrFail($id);
+
+        return view('profiles.show', compact('user'));
     }
 }

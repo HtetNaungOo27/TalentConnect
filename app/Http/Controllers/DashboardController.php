@@ -16,6 +16,10 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         // Default empty collections (prevents undefined variable errors)
         $jobs = collect();
         $appliedJobs = collect();
@@ -31,8 +35,9 @@ class DashboardController extends Controller
         // Normal user: jobs they applied to
         if ($user->role === 'user') {
             $appliedJobs = Job::whereHas('applicants', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                })
+                $query->where('user_id', $user->id);
+            })
+                ->where('status', 'accepted')
                 ->with(['applicants' => function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 }])
@@ -45,5 +50,25 @@ class DashboardController extends Controller
             'jobs',
             'appliedJobs'
         ));
+    }
+
+    public function employer()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'employer') {
+            abort(403); // Only employers can access this
+        }
+
+        $jobs = Job::with('applicants')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return view('dashboard.index', compact(
+    'user',
+    'jobs',
+    
+));
     }
 }

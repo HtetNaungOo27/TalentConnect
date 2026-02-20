@@ -28,7 +28,9 @@ class Job extends Model
         'company_description',
         'company_logo',
         'company_website',
-        'user_id'
+        'user_id',
+        'status',
+        'rejection_reason'
     ];
 
     //relation to user
@@ -58,4 +60,11 @@ class Job extends Model
     {
         return $this->deadline && $this->deadline->isPast();
     }
+
+    public function openingsLeft(): int
+{
+    $acceptedCount = $this->applicants()->where('status', 'accepted')->count();
+
+    return max(0, $this->openings - $acceptedCount);
+}
 }

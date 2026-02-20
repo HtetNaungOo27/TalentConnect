@@ -32,6 +32,7 @@
                         <x-inputs.select id="job_type" name="job_type" label="Employment Type"
                             :options="['Full-Time' => 'Full-Time', 'Part-Time' => 'Part-Time', 'Contract' => 'Contract', 'Internship' => 'Internship', 'Remote' => 'Remote']" 
                             value="{{ old('job_type') }}" />
+                        <x-inputs.text id="openings" name="openings" label="Number of openings" type="number" value="{{ old('openings', 1) }}" min="1" />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

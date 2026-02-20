@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Models\Job;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Auth\Access;
+use App\Notifications\JobUpdatedNotification;
+use Illuminate\Support\Facades\Notification;
 
 class JobController extends Controller
 {
@@ -15,11 +17,13 @@ class JobController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $jobs = Job::paginate(9);
+{
+    $jobs = Job::where('status', 'approved') 
+               ->latest()
+               ->paginate(9);
 
-        return view('jobs.index', compact('jobs'));
-    }
+    return view('jobs.index', compact('jobs'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -98,10 +102,10 @@ class JobController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Job $job): string
+    public function update(Request $request, Job $job)
     {
-        //check if user is authorize
         $this->authorize('update', $job);
+
 
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
@@ -121,25 +125,34 @@ class JobController extends Controller
             'company_name' => 'required|string',
             'company_description' => 'nullable|string',
             'company_logo' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
-            'company_website' => 'nullable|url'
+            'company_website' => 'nullable|url',
         ]);
 
-        // Check for image
         if ($request->hasFile('company_logo')) {
-            // Delete old logo
-            Storage::delete('public/logos/' . basename($job->company_logo));
+            if ($job->company_logo && Storage::disk('public')->exists($job->company_logo)) {
+                Storage::disk('public')->delete($job->company_logo);
+            }
 
-            // Store the file and get path
-            $path = $request->file('company_logo')->store('logos', 'public');
-
-            // Add path to validated data
-            $validatedData['company_logo'] = $path;
+            $validatedData['company_logo'] = $request->file('company_logo')->store('logos', 'public');
         }
 
-        // Submit to database
+        // Check if the job was rejected
+        $wasRejected = $job->status === 'rejected';
+
+        // If rejected, reset status to pending
+        if ($wasRejected) {
+            $validatedData['status'] = 'pending';
+        }
+
         $job->update($validatedData);
 
-        return redirect()->route('jobs.index')->with('success', 'Job listing updated successfully!');
+        // Send notification to all admins if it was previously rejected
+        if ($wasRejected) {
+            $admins = User::where('role', 'admin')->get();
+            Notification::send($admins, new JobUpdatedNotification($job));
+        }
+
+        return redirect()->route('employer.dashboard')->with('success', 'Job listing updated successfully!');
     }
 
     /**

@@ -10,11 +10,19 @@ class CheckRole
     public function handle(Request $request, Closure $next, $role)
     {
         if (!auth()->check()) {
-            abort(403);
+            return redirect('/login');
         }
 
-        if (auth()->user()->role !== $role) {
-            abort(403);
+        if ($role === 'admin' && !auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized.');
+        }
+
+        if ($role === 'employer' && !auth()->user()->isEmployer()) {
+            abort(403, 'Unauthorized.');
+        }
+
+        if ($role === 'user' && !auth()->user()->isUser()) {
+            abort(403, 'Unauthorized.');
         }
 
         return $next($request);

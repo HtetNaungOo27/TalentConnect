@@ -34,4 +34,9 @@ class JobPolicy
         return $user->role === 'employer'
             && $user->id === $job->user_id;
     }
+
+    public function updateStatus(User $user)
+    {
+        return $user->role === 'admin';
+    }
 }

@@ -51,6 +51,39 @@
               {{ $job->title }}
             </h1>
 
+            @can('updateStatus', $job)
+            <div class="mt-6 bg-gray-50 border border-gray-200 rounded-2xl p-6">
+              <form method="POST" action="{{ route('admin.jobs.status', $job->id) }}" class="flex flex-col md:flex-row md:items-center gap-4">
+                @csrf
+                @method('PUT')
+
+                <div class="flex-1">
+                  <label class="text-xs font-bold uppercase text-gray-500 tracking-wider">
+                    Job Status
+                  </label>
+
+                  <select name="status"
+                    class="mt-2 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-semibold">
+                    <option value="pending" {{ $job->status === 'pending' ? 'selected' : '' }}>
+                      Pending
+                    </option>
+                    <option value="approved" {{ $job->status === 'approved' ? 'selected' : '' }}>
+                      Approved
+                    </option>
+                    <option value="rejected" {{ $job->status === 'rejected' ? 'selected' : '' }}>
+                      Rejected
+                    </option>
+                  </select>
+                </div>
+
+                <button type="submit"
+                  class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition shadow">
+                  Update Status
+                </button>
+              </form>
+            </div>
+            @endcan
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-8 border-y border-gray-100 mb-10">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
@@ -150,7 +183,6 @@
                     <form method="POST" action="{{ route('applicant.store', $job->id) }}" enctype="multipart/form-data" class="space-y-6">
                       @csrf
 
-                      {{-- Using our custom baby-blue components --}}
                       <x-inputs.text id="full_name" name="full_name" label="Full Name" required icon="user" />
 
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,7 +223,6 @@
               @endauth
             </div>
 
-            {{-- Background Decorative Elements --}}
             <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
             <div class="absolute top-0 right-0 w-40 h-40 bg-blue-400/30 rounded-full blur-2xl"></div>
         </section>
@@ -211,7 +242,11 @@
               </div>
               @endif
             </div>
-            <h2 class="text-2xl font-black text-gray-900 leading-tight">{{ $job->company_name }}</h2>
+            <h2 class="text-2xl font-black text-gray-900 leading-tight">
+              <a href="{{ route('employers.show', $job->user) }}" class="hover:underline text-indigo-600">
+                {{ $job->company_name }}
+              </a>
+            </h2>
             <div class="flex items-center gap-1 mt-2">
               <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full"></span>
               <p class="text-sm text-gray-400 font-bold uppercase tracking-tighter">Verified Recruiter</p>

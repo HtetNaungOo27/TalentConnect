@@ -1,8 +1,6 @@
 <section class="max-w-7xl mx-auto my-16 px-6 lg:px-8">
     @if(auth()->check() && auth()->user()->role === 'employer')
-        {{-- Employer View: Soft Cloud Style --}}
         <div class="group relative bg-white rounded-[3rem] p-10 md:p-16 shadow-[0_30px_70px_-15px_rgba(191,219,254,0.4)] border border-blue-50 overflow-hidden">
-            {{-- Floating Decorative Blurs: Baby Blue & Mint --}}
             <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-200/30 rounded-full blur-[80px] group-hover:bg-blue-300/40 transition-all duration-1000 animate-pulse"></div>
             <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-100/40 rounded-full blur-[60px]"></div>
 
@@ -37,7 +35,6 @@
         </div>
 
     @elseif(auth()->check() && auth()->user()->role === 'user')
-        {{-- Job Seeker View: Dreamy Pastel Gradient --}}
         <div class="group relative bg-gradient-to-br from-blue-400 to-blue-300 rounded-[3rem] p-10 md:p-16 shadow-[0_30px_70px_-15px_rgba(147,197,253,0.5)] overflow-hidden">
             {{-- Sparkle / Pattern Overlay --}}
             <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
