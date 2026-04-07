@@ -51,16 +51,15 @@ class User extends Authenticatable
     }
 
     public function appliedJobs()
-    {
-        return $this->hasManyThrough(
-            Job::class,
-            Applicant::class,
-            'user_id',   // FK on applicants
-            'id',        // FK on jobs
-            'id',        // local user key
-            'job_id'     // local applicant key
-        );
-    }
+{
+    return $this->belongsToMany(
+        Job::class,
+        'applicants',
+        'user_id',
+        'job_id'
+    )->withPivot('status', 'created_at')
+     ->withTimestamps();
+}
     // Experiences
     public function experiences()
     {

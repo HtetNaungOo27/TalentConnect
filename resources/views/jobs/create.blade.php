@@ -28,7 +28,7 @@
                     <x-inputs.text-area id="description" name="description" label="Job Description" value="{{ old('description') }}" rows="5" />
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <x-inputs.text id="salary" name="salary" label="Annual Salary (USD)" type="number" placeholder="90000" value="{{ old('salary') }}" />
+                        <x-inputs.text id="salary" name="salary" label="Salary" type="number" placeholder="90000" value="{{ old('salary') }}" />
                         <x-inputs.select id="job_type" name="job_type" label="Employment Type"
                             :options="['Full-Time' => 'Full-Time', 'Part-Time' => 'Part-Time', 'Contract' => 'Contract', 'Internship' => 'Internship', 'Remote' => 'Remote']" 
                             value="{{ old('job_type') }}" />

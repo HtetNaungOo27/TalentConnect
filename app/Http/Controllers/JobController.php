@@ -61,7 +61,8 @@ class JobController extends Controller
             'company_name' => 'required|string',
             'company_description' => 'nullable|string',
             'company_logo' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
-            'company_website' => 'nullable|url'
+            'company_website' => 'nullable|url',
+            'openings' => 'required|integer|min:1'
         ]);
 
         //hard coded user id

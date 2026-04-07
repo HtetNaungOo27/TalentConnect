@@ -9,19 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('experiences', function (Blueprint $table) {
-            $table->string('start_date')->change();
-            $table->string('end_date')->nullable()->change();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('experiences', function (Blueprint $table) {
-            $table->string('start_date')->change();
-            $table->string('end_date')->nullable()->change();
+            //
         });
     }
 };

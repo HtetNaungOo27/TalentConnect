@@ -60,7 +60,7 @@
                         <li><a href="#" class="text-blue-950 hover:text-blue-500 transition-colors">Privacy Policy</a></li>
                         <li><a href="#" class="text-blue-950 hover:text-blue-500 transition-colors">Terms of Service</a></li>
                         <li><a href="#" class="text-blue-950 hover:text-blue-500 transition-colors">Contact Us</a></li>
-                    </ul>
+                    </ul> 
                 </div>
 
                 <div>
